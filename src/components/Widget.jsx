@@ -86,49 +86,167 @@ export default function Widget({ widget, categoryId }) {
       ],
     };
 
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { 
+          display: true, 
+          position: 'bottom',
+          labels: {
+            boxWidth: 12,
+            padding: 20,
+            font: {
+              size: window.innerWidth < 768 ? 10 : 12
+            }
+          }
+        },
+        tooltip: { 
+          mode: 'index', 
+          intersect: false,
+          bodyFont: {
+            size: window.innerWidth < 768 ? 10 : 12
+          },
+          titleFont: {
+            size: window.innerWidth < 768 ? 12 : 14
+          }
+        },
+      },
+      scales: {
+        x: { 
+          title: { 
+            display: true, 
+            text: 'X-Axis',
+            font: {
+              size: window.innerWidth < 768 ? 10 : 12
+            }
+          },
+          ticks: {
+            font: {
+              size: window.innerWidth < 768 ? 8 : 10
+            }
+          }
+        },
+        y: { 
+          beginAtZero: true, 
+          title: { 
+            display: true, 
+            text: 'Value',
+            font: {
+              size: window.innerWidth < 768 ? 10 : 12
+            }
+          },
+          ticks: {
+            font: {
+              size: window.innerWidth < 768 ? 8 : 10
+            }
+          }
+        },
+      },
+    };
+
     switch (widget.type) {
       case 'chart':
         return (
-          <Line
-            data={dataset}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: { display: true, position: 'bottom' },
-                tooltip: { mode: 'index', intersect: false },
-              },
-              scales: {
-                x: { title: { display: true, text: 'X-Axis' } },
-                y: { beginAtZero: true, title: { display: true, text: 'Value' } },
-              },
-            }}
-          />
+          <div className="h-64 sm:h-72 md:h-80">
+            <Line
+              data={dataset}
+              options={commonOptions}
+            />
+          </div>
         );
       case 'bar':
-        return <Bar data={dataset} />;
+        return (
+          <div className="h-64 sm:h-72 md:h-80">
+            <Bar 
+              data={dataset} 
+              options={commonOptions}
+            />
+          </div>
+        );
       case 'pie':
-        return <Pie data={dataset} />;
+        return (
+          <div className="h-64 sm:h-72 md:h-80">
+            <Pie 
+              data={dataset} 
+              options={{
+                ...commonOptions,
+                plugins: {
+                  ...commonOptions.plugins,
+                  legend: {
+                    ...commonOptions.plugins.legend,
+                    position: window.innerWidth < 768 ? 'bottom' : 'right'
+                  }
+                }
+              }}
+            />
+          </div>
+        );
       case 'doughnut':
-        return <Doughnut data={dataset} />;
+        return (
+          <div className="h-64 sm:h-72 md:h-80">
+            <Doughnut 
+              data={dataset} 
+              options={{
+                ...commonOptions,
+                plugins: {
+                  ...commonOptions.plugins,
+                  legend: {
+                    ...commonOptions.plugins.legend,
+                    position: window.innerWidth < 768 ? 'bottom' : 'right'
+                  }
+                }
+              }}
+            />
+          </div>
+        );
       case 'radar':
-        return <Radar data={dataset} />;
+        return (
+          <div className="h-64 sm:h-72 md:h-80">
+            <Radar 
+              data={dataset} 
+              options={commonOptions}
+            />
+          </div>
+        );
       case 'polar':
-        return <PolarArea data={dataset} />;
+        return (
+          <div className="h-64 sm:h-72 md:h-80">
+            <PolarArea 
+              data={dataset} 
+              options={{
+                ...commonOptions,
+                plugins: {
+                  ...commonOptions.plugins,
+                  legend: {
+                    ...commonOptions.plugins.legend,
+                    position: window.innerWidth < 768 ? 'bottom' : 'right'
+                  }
+                }
+              }}
+            />
+          </div>
+        );
       default:
         return <p className="text-purple-800 text-md font-medium">{widget.content}</p>;
     }
   };
 
   return (
-    <div className="relative p-5 bg-purple-100 bg-opacity-60 rounded-2xl shadow-xl border border-purple-300 hover:scale-105 transition">
+    <div className="relative p-4 sm:p-5 bg-purple-100 bg-opacity-60 rounded-2xl shadow-xl border border-purple-300 hover:scale-105 transition w-full max-w-full overflow-hidden">
       <button
         onClick={handleRemove}
-        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+        className="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1"
+        aria-label="Remove widget"
       >
-        <X />
+        <X size={20} />
       </button>
-      <h3 className="text-xl font-semibold mb-3 text-purple-900">{widget.name}</h3>
-      {renderChart()}
+      <h3 className="text-lg sm:text-xl font-semibold mb-3 text-purple-900 truncate">
+        {widget.name}
+      </h3>
+      <div className="w-full overflow-auto">
+        {renderChart()}
+      </div>
     </div>
   );
 }
